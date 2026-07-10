@@ -1,0 +1,21 @@
+[page]
+title = "Will Griffin"
+navigation = [ {name = "Home", link = "index.html"}, {name = "About Me", link = "#aboutme"} ]
+
+[content]
+body = '''
+# Will Griffin
+
+This is my portfolio site!
+
+## Bio
+
+I am cool
+
+## Some code
+
+```py
+if x == 5:
+    print("Hello, world!")
+```
+'''

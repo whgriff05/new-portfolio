@@ -1,0 +1,11 @@
+<a href="/">
+    <h1>{{ site.title }}</h1>
+</a>
+
+<nav>
+    <ul>
+        {% for x in page.navigation %}
+        <a href="{{ x.link }}">{{ x.name }}</a>
+        {% endfor %}
+    </ul>
+</nav>

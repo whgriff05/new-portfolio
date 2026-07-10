@@ -1,0 +1,24 @@
+<!doctype html>
+
+<html>
+    <head>
+        {% if site.title %}
+        <title>{{ site.title }}</title>
+        {% else %}
+        <title>A Build.py Site</title>
+        {% endif %}
+
+    </head>
+
+    <body>
+        <header>
+            {% include "header.html" %}
+        </header>
+
+    {% block main %}
+    {% endblock main %}
+
+    </body>
+
+
+</html>
