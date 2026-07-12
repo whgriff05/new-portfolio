@@ -4,18 +4,16 @@ navigation = [ {name = "Home", link = "index.html"}, {name = "About Me", link = 
 
 [content]
 body = '''
-# Will Griffin
 
-This is my portfolio site!
+## About Me
 
-## Bio
+Hi! I'm __Will Griffin__, a junior at the [University of Notre Dame](https://nd.edu) studying [Computer Science](https://cse.nd.edu) with minors in Engineering Corporate Practice and Liturgical Music Ministry. I'm originally from Fishers, IN, and on campus, I am a resident of [Coyle Hall](https://coylehallnd.com).
 
-I am cool
+I'm most proficient in __C__ and __Python__, and I am interested in low-level comptuing; notably __Operating Systems__, __Programming Languages and Compilers__, __Optimized Computing__, and __Networking__.
 
-## Some code
+Outside of the classroom, I have also made a few personal tools such as [pymd](https://github.com/whgriff05/pymd/), a terminal markdown viewer made with __Python__ and __ncurses__. In addition, I've also started self-hosting projects such as this website, and __soju__, an IRC bouncer, to connect with the (NDLUG)[https://ndlug.org] IRC chat.
 
-```py
-if x == 5:
-    print("Hello, world!")
-```
+Apart from tech, I am also highly interested in music, being a pianist, organist, and self-taught guitarist. I sing in the [Notre Dame Liturgical Choir](https://litchoir.nd.edu) and accompany Masses for both my dorm's chapel and my home parish. I also enjoy cooking, reading history, lifting, and bar trivia.
+
+Feel free to get in touch with me via [whgriff24@gmail.com](mailto:whgriff24@gmail.com) or [LinkedIn](https://www.linkedin.com/in/william-henry-griffin/)!
 '''
