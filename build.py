@@ -14,6 +14,7 @@ import jinja2
 import markdown
 import pathlib
 from rich.progress import BarColumn, MofNCompleteColumn, Progress, TextColumn
+import shutil
 import sys
 import time
 import tomllib
@@ -66,10 +67,12 @@ class Page:
             page_kwargs = {k: v for k, v in toml_data["page"].items() if k not in {"title", "navigation"}}
             page = cls(page_path, toml_data["page"]["title"], toml_data["page"]["navigation"], toml_data["content"]["body"], **page_kwargs)
 
+            print(page_path)
+
             return page
 
     def build(self, site):
-        body = markdown.markdown(self.body, extensions=["fenced_code", "codehilite"])
+        body = markdown.markdown(self.body, extensions=["fenced_code", "codehilite", "md_in_html", "toc"])
         env = jinja2.Environment(
                 loader = jinja2.FileSystemLoader(site.templates_path),
                 trim_blocks = True,
@@ -82,11 +85,13 @@ class Page:
         return template.render(**settings)
 
 class Site:
-    def __init__(self, title, base_path, templates_path, output_path):
+    def __init__(self, title, base_path, templates_path, static_path, output_path):
         self.title = title                      # Site title
         self.pages = []                         # Site pages
+        self.static_files = []                  # Site static files
         self.base_path = base_path              # Site builder base path
         self.templates_path = templates_path    # Site templates path
+        self.static_path = static_path          # Site builder static path
         self.output_path = output_path          # Site builder output path
 
     @classmethod
@@ -106,31 +111,46 @@ class Site:
 
         # Define the templates path and output path
         templates_path = base_path / "templates"
+        static_path = base_path / "static"
         output_path = base_path / "public"
 
         # Create the site object
-        site = cls(site_title, base_path, templates_path, output_path)
+        site = cls(site_title, base_path, templates_path, static_path, output_path)
 
-        # Walk the directory tree, building pages out of each toml file
+        # Walk the directory tree, building pages out of each toml file and loading static files
         progress = Progress(
                 TextColumn("{task.description}"),
                 BarColumn(),
                 MofNCompleteColumn()
                 )
-        task_id = progress.add_task("Loading Pages", total=0)
-        task = progress.tasks[task_id]
+        pages_task_id = progress.add_task("Loading Pages", total=0)
+        static_task_id = progress.add_task("Loading Static", total=0)
+
+        pages_task = progress.tasks[pages_task_id]
+        static_task = progress.tasks[static_task_id]
+        
         progress.start()
         for walk_path, _, pages in path.walk():
             time.sleep(0.1)
-            progress.update(task_id, total=(task.total or 0) + len(pages))
+            progress.update(pages_task_id, total=(pages_task.total or 0) + len(pages))
             for page_name in pages:
                 if page_name.endswith(".toml"):
                     site.build_page_class(walk_path / page_name) 
-                    progress.update(task_id, advance=1)
+                    progress.update(pages_task_id, advance=1)
+
+        for walk_path, _, static_files in static_path.walk():
+            time.sleep(0.1)
+            progress.update(static_task_id, total=(static_task.total or 0) + len(static_files))
+            for sf in static_files:
+                site.load_static_file(walk_path / sf)
+                progress.update(static_task_id, advance=1)
         progress.stop()
 
-
         return site
+
+    def load_static_file(self, path):
+        # Load static file path with and without base directory
+        self.static_files.append((path, pathlib.Path(*path.parts[1:])))
 
     def build_page_class(self, path):
         # Build and append page
@@ -147,12 +167,19 @@ class Site:
                 BarColumn(),
                 MofNCompleteColumn()
                 )
-        task_id = progress.add_task("Loading Pages", total=len(self.pages))
+        pages_task_id = progress.add_task("Building Pages", total=len(self.pages))
+        static_task_id = progress.add_task("Building Static", total=len(self.static_files))
+
 
         progress.start()
         for page in self.pages:
             self.build_page(page)
-            progress.update(task_id, advance=1)
+            progress.update(pages_task_id, advance=1)
+            time.sleep(0.1)
+
+        for static_file in self.static_files:
+            self.build_static_file(static_file)
+            progress.update(static_task_id, advance=1)
             time.sleep(0.1)
 
         progress.stop()
@@ -163,6 +190,13 @@ class Site:
 
         with open(page.path, "w") as page_fp:
             page_fp.write(page.build(self))
+
+    def build_static_file(self, static_file):
+        # Make sure file path exists
+        file_output_path = self.output_path / static_file[1]
+        file_output_path.parent.mkdir(parents=True, exist_ok=True)
+
+        shutil.copy(static_file[0], file_output_path)
 
 # Main Function
 def main(argc=len(sys.argv), argv=sys.argv):
