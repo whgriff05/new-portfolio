@@ -1,3 +1,11 @@
+{% set depth = page.path.parts|length - 2 %}
+{% if depth == 1 %}
+{% set rel_prefix = "../" %}
+{% elif depth == 2 %}
+{% set rel_prefix = "../../" %}
+{% else %}
+{% set rel_prefix = "" %}
+{% endif %}
 <!doctype html>
 
 <html>
@@ -8,7 +16,8 @@
         <title>A Build.py Site</title>
         {% endif %}
 
-        <link rel="stylesheet" href="css/base.css">
+        <link rel="stylesheet" href="{{ rel_prefix }}css/base.css">
+        <link rel="stylesheet" href="{{ rel_prefix }}css/index.css">
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,10 +30,53 @@
             {% include "header.html" %}
         </header>
 
+        <main>
     {% block main %}
     {% endblock main %}
+
+    {% block posts %}
+    {% if page.kwargs.posts %}
+    <section class="section-container" id="blog">
+        <h2>Blog</h2>
+        <div class="posts-grid">
+            {% for post in page.kwargs.posts %}
+            <article class="post-card textbox">
+                <span class="post-date">{{ post.date }}</span>
+                <h3><a href="{{ post.link }}">{{ post.title }}</a></h3>
+                <p>{{ post.summary }}</p>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+    {% endblock posts %}
+
+    {% block projects %}
+    {% if page.kwargs.projects %}
+    <section class="section-container" id="projects">
+        <h2>Projects</h2>
+        <div class="projects-grid">
+            {% for project in page.kwargs.projects %}
+            <div class="project-card textbox">
+                <h3><a href="{{ project.link }}" target="_blank" rel="noopener">{{ project.title }}</a></h3>
+                <p>{{ project.description }}</p>
+                {% if project.tags %}
+                <div class="tags">
+                    {% for tag in project.tags %}
+                    <span class="tag">{{ tag }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+    {% endblock projects %}
+        </main>
 
     </body>
 
 
 </html>
+
