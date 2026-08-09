@@ -58,7 +58,7 @@
         <div class="projects-grid">
             {% for project in page.kwargs.projects %}
             <div class="project-card textbox">
-                <h3><a href="{{ project.link }}" target="_blank" rel="noopener">{{ project.title }}</a></h3>
+                <h3><a href="{{ project.link }}">{{ project.title }}</a></h3>
                 <p>{{ project.description }}</p>
                 {% if project.tags %}
                 <div class="tags">
