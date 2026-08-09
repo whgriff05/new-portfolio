@@ -1,6 +1,11 @@
 [page]
 title = "Will Griffin"
-navigation = [ {name = "Home", link = "index.html"}, {name = "About Me", link = "#about-me"}, {name = "Blog", link = "#blog"} ]
+navigation = [
+	{name = "Home", link = "index.html"},
+	{name = "About Me", link = "#about-me"},
+	{name = "Articles", link = "#articles"},
+	{name = "Projects", link = "#projects"},
+]
 
 [content]
 body = '''
