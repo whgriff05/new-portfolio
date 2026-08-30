@@ -49,8 +49,3 @@ Feel free to get in touch with me via [whgriff24@gmail.com](mailto:whgriff24@gma
 
 '''
 
-
-[[page.projects]]
-title = "pymd"
-link = "projects/pymd.html"
-description = "A terminal markdown viewer made with Python and ncurses."
